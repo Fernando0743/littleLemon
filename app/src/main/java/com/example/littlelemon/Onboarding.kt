@@ -71,8 +71,7 @@ fun Onboarding(){
     Column(
         //Arguments for the column class
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
 
     ) {
@@ -80,7 +79,7 @@ fun Onboarding(){
             painter = painterResource(id = R.drawable.little_lemon_logo),
             contentDescription = "Logo",
             modifier = Modifier
-                .padding(top = 16.dp, bottom = 30.dp)
+                .padding(top = 30.dp, bottom = 30.dp, start = 16.dp, end = 16.dp)
                 .height(50.dp),
             contentScale = ContentScale.Crop
         )
@@ -110,7 +109,9 @@ fun Onboarding(){
             fontFamily = KarlaFont,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Start,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 2.dp, bottom = 2.dp)
         )
         Spacer(modifier = Modifier.height(50.dp))
 
@@ -120,7 +121,9 @@ fun Onboarding(){
             onValueChange = { firstName = it },
             label = { Text("First Name", fontFamily = KarlaFont,
                 fontWeight = FontWeight.Normal) },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 2.dp, bottom = 2.dp)
         )
         Spacer(modifier = Modifier.height(35.dp))
 
@@ -129,7 +132,9 @@ fun Onboarding(){
             onValueChange = {lastName = it},
             label = { Text("Last Name", fontFamily = KarlaFont,
                 fontWeight = FontWeight.Normal)},
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 2.dp, bottom = 2.dp)
         )
         Spacer(modifier = Modifier.height(35.dp))
 
@@ -139,7 +144,9 @@ fun Onboarding(){
             onValueChange = {email = it},
             label = { Text("Email", fontFamily = KarlaFont,
                 fontWeight = FontWeight.Normal)},
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 2.dp, bottom = 2.dp)
         )
         Spacer(
             modifier = Modifier
@@ -152,7 +159,7 @@ fun Onboarding(){
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFD700)),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom =  16.dp),
+                .padding(bottom =  16.dp, start = 16.dp, end = 16.dp),
             border = BorderStroke(2.dp, Color(0xFFEE9972)),
         ) {
             Text("Register", fontFamily = KarlaFont, fontSize = 20.sp,
