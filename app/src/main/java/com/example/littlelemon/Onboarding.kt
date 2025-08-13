@@ -1,7 +1,9 @@
 package com.example.littlelemon
 
 
+import android.content.Context
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -32,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -41,6 +44,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.littlelemon.R
 
 
@@ -53,7 +58,7 @@ val KarlaFont = FontFamily(
 
 
 @Composable
-fun Onboarding(){
+fun Onboarding(navController: NavHostController){
     /*
         Remember ayuda a que el valor del estado persista durante la recomposicion
         (Reconstruccion del UI cuando los datos cambian) del composable.
@@ -62,10 +67,27 @@ fun Onboarding(){
         la UI se actualice
 
         TextField Value es el valor inicial que se le dara al Text Field
+
+        SharedPreferences es una forma simple de almacenar pares clave–valor persistentes (pequeños datos)
+        en el almacenamiento interno de la app.
+
+    Persiste entre ejecuciones de la app (se guarda en un XML en /data/data/tu.paquete/shared_prefs/).
+    Ideal para flags, configuraciones y datos pequeños (booleans, strings, ints, floats, longs).
+    No es adecuado para grandes cantidades de datos ni para datos sensibles sin cifrado.
+
+    La funcion GetSharedPreferences nos permite  acceder a estos datos desde cualquier parte de la app, asi como asignar
+    un nombre personalizado al archivo donde se guardaran estos datos, ocupamos el contexto de la aplicación para que android
+    sepa desde donde acceder a los recursos y al almacenamiento. Similar a this o self en python.
+    Mode nos indica como se abrira este archivo de preferencias, en este caso el modo privado nos dice que olo nuestra app puede
+    leerlo y escribirlo
      */
     var firstName by remember { mutableStateOf(TextFieldValue("")) }
     var lastName by remember { mutableStateOf(TextFieldValue("")) }
     var email by remember { mutableStateOf(TextFieldValue("")) }
+    var message by remember { mutableStateOf("") }
+
+    val context = LocalContext.current
+    val sharedPreferences = context.getSharedPreferences("LittleLemonPrefs", Context.MODE_PRIVATE)
 
     //Single column layout
     Column(
@@ -155,7 +177,24 @@ fun Onboarding(){
         )
 
         OutlinedButton (
-            onClick = {},
+            onClick = {
+                if(firstName.text.isBlank() || lastName.text.isBlank() || email.text.isBlank())
+                {
+                    message = "Registration unsuccesful. Please enter all data"
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                }
+                else
+                {
+                    //Save that user is now logged in on Shared PrEFERENCES
+                    //apply() guarda de forma asíncrona (no bloquea el hilo UI). commit() guarda sincrónicamente y devuelve Boolean
+                    sharedPreferences.edit().putBoolean("isLoggedIn", true).apply()
+
+                    //Go to home screen
+                    message = "Registration succesful!"
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    navController.navigate(HomeDestination.route)
+                }
+            },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFD700)),
             modifier = Modifier
                 .fillMaxWidth()
@@ -176,7 +215,9 @@ fun Onboarding(){
 @Preview(showBackground = false)
 @Composable
 fun OnboardingPreview(){
-    Onboarding()
+    //Simulamos NavController
+    val navController = rememberNavController()
+    Onboarding(navController)
 }
 
 
