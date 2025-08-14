@@ -185,9 +185,15 @@ fun Onboarding(navController: NavHostController){
                 }
                 else
                 {
-                    //Save that user is now logged in on Shared PrEFERENCES
+                    //Save that user is now logged in on Shared PrEFERENCES and user information
                     //apply() guarda de forma asíncrona (no bloquea el hilo UI). commit() guarda sincrónicamente y devuelve Boolean
-                    sharedPreferences.edit().putBoolean("isLoggedIn", true).apply()
+                    sharedPreferences.edit().apply {
+                        putBoolean("isLoggedIn", true)
+                        putString("firstName", firstName.text)
+                        putString("lastName", lastName.text)
+                        putString("email", email.text)
+                            .apply()
+                    }
 
                     //Go to home screen
                     message = "Registration succesful!"

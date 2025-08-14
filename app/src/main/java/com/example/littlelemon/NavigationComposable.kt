@@ -54,10 +54,10 @@ fun navigationComposable(navController: NavHostController, isUserLoggedIn: Boole
                 //When a user presses the Logout button on the Profile destination
                 // the app should navigate from the Profile destination to the Onboarding destination.
                 onLogoutClick = {
-                    //Guardamos en SharedPreferences que el usuario ya no esta loggeado
+                    //Limpiamos toda la informacion en shared preferences, la informacion del usuario y el boolean de logged int
                     val sharedPreferences = context.getSharedPreferences("LittleLemonPrefs", Context.MODE_PRIVATE)
                     sharedPreferences.edit()
-                        .putBoolean("isLoggedIn", false)
+                        .clear()
                         .apply()
 
                     //Navegarmos a OnboardingScreen y limpiamos el stack de navegacion
