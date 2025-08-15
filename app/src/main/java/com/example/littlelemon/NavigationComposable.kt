@@ -24,7 +24,7 @@ The above components will allow navigation between various navigation destinatio
  */
 
 @Composable
-fun navigationComposable(navController: NavHostController, isUserLoggedIn: Boolean, context: Context){
+fun navigationComposable(navController: NavHostController, isUserLoggedIn: Boolean, context: Context, db: AppDatabase){
     //Create NavHost
     NavHost (
         navController = navController,
@@ -41,7 +41,8 @@ fun navigationComposable(navController: NavHostController, isUserLoggedIn: Boole
         {
             //When user is on Home Screen and clicks Profile, we take them to profile screen
             HomeScreen(
-                onProfileClick = {navController.navigate(ProfileDestination.route)}
+                onProfileClick = {navController.navigate(ProfileDestination.route)},
+                db = db
             )
         }
 

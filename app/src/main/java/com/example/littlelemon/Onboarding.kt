@@ -54,8 +54,15 @@ val KarlaFont = FontFamily(
     Font(R.font.karla_regular, FontWeight.Normal),
     Font(R.font.karla_bold, FontWeight.Bold),
     Font(R.font.karla_medium, FontWeight.Medium),
+    Font(R.font.karla_extrabold, FontWeight.ExtraBold)
 )
 
+val MarkaziFont = FontFamily(
+    Font(R.font.markazitext_bold, FontWeight.Bold),
+    Font(R.font.markazitext_semibold, FontWeight.SemiBold),
+    Font(R.font.markazitext_medium, FontWeight.Medium),
+    Font(R.font.markazitext_regular, FontWeight.Normal),
+)
 
 @Composable
 fun Onboarding(navController: NavHostController){
