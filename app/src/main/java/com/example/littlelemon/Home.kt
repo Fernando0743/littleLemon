@@ -35,42 +35,20 @@ import kotlin.contracts.contract
 
 
 //Data class para los productos extra
-data class ProductExtra(
-    val name: String,
-    val price: Double
-)
 
 @Composable
-fun HomeScreen(onProfileClick: () -> Unit, db: AppDatabase){
-    // Estado que controla qué pantalla mostrar: null = lista de productos, MenuItem = detalle del producto
-    var selectedMenuItem by remember { mutableStateOf<MenuItemEntity?>(null) }
-
-
-    if(selectedMenuItem != null)
-    {
-        ProductDetailScreen(
-            menuItem = selectedMenuItem!!, // Pasa el producto seleccionado
-            onBackClick = {selectedMenuItem = null}, // Callback que regresa a la lista al limpiar el estado
-            onAddToCart = { item, extras, quantity ->
-                //Handle logic to add to cart
-                selectedMenuItem = null
-
-            }
-        )
-    }
-    else
-    {
-        HomeContent(
-            onProfileClick = onProfileClick,
-            db = db,
-            onMenuItemClick = { menuItem ->
-                // Callback que se ejecuta cuando se hace clic en un producto
-                // Actualiza el estado para mostrar la pantalla de detalle
-                selectedMenuItem = menuItem
-            }
-        )
-    }
+fun HomeScreen(
+    onProfileClick: () -> Unit,
+    onMenuItemClick: (MenuItemEntity) -> Unit,
+    db: AppDatabase
+) {
+    HomeContent(
+        onProfileClick = onProfileClick,
+        db = db,
+        onMenuItemClick = onMenuItemClick
+    )
 }
+
 
 
 @Composable
@@ -576,7 +554,7 @@ fun ProductDetailScreen(
                             text = "Delivery time: $deliveryTime",
                             fontFamily = KarlaFont,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
+                            fontSize = 1.sp,
                             color = Color.Black
                         )
                         Button(
@@ -590,7 +568,7 @@ fun ProductDetailScreen(
                         {
                             Text(
                                 text = "Change",
-                                fontSize = 18.sp,
+                                fontSize = 16.sp,
                                 fontFamily = KarlaFont,
                                 fontWeight = FontWeight.Medium,
                                 color = Color(color= 0xFF495E57)

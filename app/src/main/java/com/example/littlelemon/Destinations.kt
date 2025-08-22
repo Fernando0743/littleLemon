@@ -24,3 +24,13 @@ object HomeDestination : Destination{
 object ProfileDestination : Destination{
     override val route = "Profile"
 }
+
+object ProductDetailDestination: Destination{
+    override val route = "ProductDetail"
+    const val menuItemIdArg = "menuItemId"
+    val routeWithArgs = "$route/{$menuItemIdArg}"
+}
+
+object CheckoutDestination: Destination{
+    override val route = "Checkout"
+}
