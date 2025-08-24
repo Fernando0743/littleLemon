@@ -99,7 +99,7 @@ fun navigationComposable(navController: NavHostController, isUserLoggedIn: Boole
         {
             ProfileScreen(
                 //When user presses back button on the profile screen we take them to home screen
-                onBackClick ={ navController.navigate(HomeDestination.route) },
+                onBackClick ={ navController.popBackStack() },
 
                 //When a user presses the Logout button on the Profile destination
                 // the app should navigate from the Profile destination to the Onboarding destination.
