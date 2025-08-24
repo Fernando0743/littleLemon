@@ -554,7 +554,7 @@ fun ProductDetailScreen(
                             text = "Delivery time: $deliveryTime",
                             fontFamily = KarlaFont,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 1.sp,
+                            fontSize = 16.sp,
                             color = Color.Black
                         )
                         Button(

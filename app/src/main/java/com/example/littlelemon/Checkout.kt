@@ -33,6 +33,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,9 +44,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 
@@ -55,6 +61,9 @@ fun CheckoutScreen(
     onMenuItemClick: (MenuItemEntity) -> Unit,
     onProfileClick: () -> Unit
 ){
+    var showSuccessDialog by remember { mutableStateOf(false) }
+
+
     //Observa todos los menu items para mostrar en "Add more to your order"
     val allMenuItems by db.menuItemDao()
         .getAllMenuItems()
@@ -65,6 +74,18 @@ fun CheckoutScreen(
     val deliveryFee = 2.00
     val serviceFee = 1.00
     val total = subtotal + deliveryFee + serviceFee
+
+    if (showSuccessDialog)
+    {
+        SuccessDialog(
+            cartItems = cartItems,
+            onTrackOrderClick = {
+                //Handle track order navigation
+                showSuccessDialog = false
+            }
+        )
+    }
+
 
     LazyColumn(
         modifier = Modifier
@@ -139,9 +160,153 @@ fun CheckoutScreen(
 
         //Checkout button
         item{
-            CheckoutButton()
+            CheckoutButton(
+                onCheckoutClick = {showSuccessDialog = true}
+            )
         }
 
+    }
+}
+
+@Composable
+fun SuccessDialog(
+    cartItems: List<CartItem>,
+    onTrackOrderClick: () -> Unit
+)
+{
+    Dialog(
+        onDismissRequest = {},
+        properties = DialogProperties(
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false
+        )
+    )
+    {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
+        )
+        {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            )
+            {
+                //Success Icon and text
+                Box(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .background(
+                            color = Color(0xFFE8F5E8),
+                            shape =CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                )
+                {
+                    Icon(
+                        painter = painterResource(id = android.R.drawable.ic_menu_send),
+                        contentDescription = "Success",
+                        modifier = Modifier.size(40.dp),
+                        tint = Color(0xFF4CAF50)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Success!",
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = KarlaFont,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Your order\nwill be with you shortly.",
+                    fontSize = 16.sp,
+                    color = Color.Gray,
+                    fontFamily = KarlaFont,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 22.sp
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                //Order summary in dialog
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                )
+                {
+                    Text(
+                        text = "Items",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = KarlaFont,
+                        color = Color.Black,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+
+                    cartItems.forEach { cartItem ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(vertical = 2.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        )
+                        {
+                            Text(
+                                text = "${cartItem.quantity} x ${cartItem.menuItem.title}",
+                                fontSize = 14.sp,
+                                color = Color.Black,
+                                fontFamily = KarlaFont,
+                                fontWeight = FontWeight.Normal,
+                                modifier = Modifier.weight(1f)
+                            )
+
+                            Text(
+                                text = "$${String.format("%.2f", cartItem.totalPrice)}",
+                                fontSize = 14.sp,
+                                fontFamily = KarlaFont,
+                                fontWeight = FontWeight.Medium,
+                                color = Color.Black
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+
+                //Track Order Button
+                Button(
+                    onClick = onTrackOrderClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF4CE14)),
+                    shape =RoundedCornerShape(8.dp)
+                )
+                {
+                    Text(
+                        text = "Track Order",
+                        fontSize = 16.sp,
+                        fontFamily = KarlaFont,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                }
+
+
+
+
+
+            }
+        }
     }
 }
 
@@ -532,10 +697,12 @@ fun PriceRow(label: String, amount: Double)
 }
 
 @Composable
-fun CheckoutButton()
+fun CheckoutButton(
+    onCheckoutClick: () -> Unit
+)
 {
     Button(
-        onClick = { },
+        onClick = { onCheckoutClick() },
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp)
